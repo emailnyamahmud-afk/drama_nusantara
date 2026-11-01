@@ -642,10 +642,11 @@ class ProductionWizard:
         # Save ke DB
         now = datetime.now(timezone.utc).isoformat()
         with self.db.conn as conn:
-            # Soft delete existing
+            # Hard delete existing storyboards (juga cascade ke segment_audio + junction tables)
+            # Pilih hard delete karena UNIQUE(episode_id, storyboard_number) tidak kompatibel dengan soft-delete
             conn.execute(
-                "UPDATE storyboards SET deleted_at = ? WHERE episode_id = ? AND deleted_at IS NULL",
-                (now, self.current_episode_id),
+                "DELETE FROM storyboards WHERE episode_id = ?",
+                (self.current_episode_id,),
             )
 
             # Build lookup: name → db_id
