@@ -70,6 +70,11 @@ def require_init() -> bool:
 @click.pass_context
 def main(ctx: click.Context) -> None:
     """Drama Nusantara TUI — produksi drama sejarah Nusantara."""
+    # Trigger migrasi config dari path lama (~/.drama-nusantara) ke path baru (~/.drama_nusantara)
+    # Hanya jalan sekali per install, no-op kalau sudah migrasi
+    from .config import ConfigManager
+    ConfigManager()
+
     if ctx.invoked_subcommand is None:
         print_banner()
         console.print("\nPerintah tersedia:\n")

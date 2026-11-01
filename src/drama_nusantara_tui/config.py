@@ -18,16 +18,21 @@ from typing import Optional
 # ============================================================
 # CONSTANTS
 # ============================================================
-APP_NAME = "drama-nusantara"
+APP_NAME = "drama_nusantara"
 APP_VERSION = "0.1.0"
 
 # Lokasi default di home user (untuk config & database index)
-HOME_CONFIG_DIR = Path.home() / ".drama-nusantara"
+# Pakai underscore agar match dengan repo name: drama_nusantara
+HOME_CONFIG_DIR = Path.home() / ".drama_nusantara"
 CONFIG_FILE = HOME_CONFIG_DIR / "config.json"
 DRAMAS_INDEX_DB = HOME_CONFIG_DIR / "dramas.sqlite3"
 
 # Default storage root (bisa di-override user saat init)
+# Pakai hyphen agar konsisten dengan konvensi folder visible di storage/HDD
 DEFAULT_STORAGE_ROOT = Path.home() / "drama-nusantara"
+
+# Legacy path (untuk migrasi dari v0.1.0 lama yang pakai hyphen)
+LEGACY_HOME_CONFIG_DIR = Path.home() / ".drama-nusantara"
 
 # Nama folder per drama
 DRAMA_FOLDER_TEMPLATE = "{slug}"  # di-isi slug drama
@@ -91,8 +96,27 @@ class ConfigManager:
     """Manager untuk load/save config user."""
 
     def __init__(self, config_path: Path = CONFIG_FILE):
+        # Migrasi otomatis dari path lama (hyphen) ke path baru (underscore)
+        self._migrate_legacy_path()
         self.config_path = config_path
         self._config: Optional[UserConfig] = None
+
+    def _migrate_legacy_path(self) -> None:
+        """Migrasi config dari ~/.drama-nusantara/ (lama) ke ~/.drama_nusantara/ (baru)."""
+        if not LEGACY_HOME_CONFIG_DIR.exists():
+            return
+        if HOME_CONFIG_DIR.exists():
+            # Path baru sudah ada, skip migrasi (jangan overwrite)
+            return
+        # Pindahkan folder lama ke path baru
+        import shutil
+        try:
+            HOME_CONFIG_DIR.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(str(LEGACY_HOME_CONFIG_DIR), str(HOME_CONFIG_DIR))
+            print(f"📦 Migrated config: {LEGACY_HOME_CONFIG_DIR} → {HOME_CONFIG_DIR}")
+        except (OSError, shutil.Error) as e:
+            print(f"⚠️  Migration failed: {e}")
+            print(f"   Manual move: mv {LEGACY_HOME_CONFIG_DIR} {HOME_CONFIG_DIR}")
 
     @property
     def config(self) -> UserConfig:
