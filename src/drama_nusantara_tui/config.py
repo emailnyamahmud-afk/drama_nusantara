@@ -136,8 +136,8 @@ class ConfigManager:
         if not self.config_path.exists():
             return False
         cfg = self.config
-        # Minimal harus ada storage_root dan gemini_api_key
-        return bool(cfg.storage_root and cfg.gemini_api_key)
+        # Minimal harus ada storage_root (Gemini API key opsional — bisa pakai mock AI)
+        return bool(cfg.storage_root)
 
 
 # ============================================================
