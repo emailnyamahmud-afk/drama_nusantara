@@ -1,0 +1,67 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+.eggs/
+build/
+dist/
+develop-eggs/
+downloads/
+sdist/
+var/
+wheels/
+*.whl
+
+# Virtual env
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# uv
+uv.lock
+.uv/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Project-specific
+# Storage lokal user — JANGAN commit
+storage/
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-wal
+*.sqlite3-shm
+
+# Config user (berisi API key)
+config.local.json
+
+# Temp files
+*.tmp
+*.bak
+/tmp/
+
+# Output
+exports/
+segments/
+assets/characters/*.png
+assets/scenes/*.png
+assets/props/*.png
